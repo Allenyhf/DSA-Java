@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * 编写基于int类型的Vector
  * @author Allen
@@ -66,6 +68,38 @@ public class Vector {
 	float getLoadfactor() {
 		return (float)this.size/(float)this.capacity;
 	}
+	//在[lo,hi)中查找
+	//返回最后一个小于等于ele的元素的位置或-1
+	int find(int ele, int lo, int hi) {
+		int i = hi-1;
+		while(i>=lo && this.arr[i]>ele) i--;
+		//要么this.arr[i]<=ele，正确
+		//要么 i<lo，即i=lo-1,查找失败，返回-1
+		if(i < lo) return -1;
+		return i;
+	}
+	//返回删除的元素个数
+	int deduplicate() {
+		int oldSize = this.size;//原始规模
+		int toRm = 0;//待删除元素的位置
+		//{0,0,1,2,1,3,4,4,5,9,9,5};
+		for(int i=0; i<this.size; i++) {
+			toRm = find(this.arr[i],1,this.size);
+			if(this.arr[toRm] == this.arr[i] && toRm!=i)
+			{
+				remove(toRm);
+				this.size--;
+				System.out.println(Arrays.toString(this.arr));
+			}	
+		}
+		return (oldSize-this.size);
+	}
+	//重写Arrays的toString方法
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return Arrays.toString(this.arr);
+	}
 	
 	//复制数组
 	void copyFrom(int[] _arr,int lo,int hi) {
@@ -115,7 +149,7 @@ public class Vector {
 		this.size -= rmSize;
 		return rmSize;
 	}
-	//单元素删除:
+	//单元素删除:基于区间删除方法实现
 	//返回删除元素的位置	返回-1，删除失败
 	int remove(int r) {
 		if(r>=this.size || r<0) return -1;
